@@ -5,29 +5,34 @@
 /* Ici, on est obligé d'utiliser la notation struct xxx,
 car la structure s'auto-référence!*/
 typedef struct node {
-		char data ;
-		struct node *link ;
-		} Lnode ;
+	char data ;
+	struct node *link ;
+} Lnode ;
 
 /* Insertion en "tête de liste" */
 void insertionTete(Lnode **ph,char item){
-	/* A compléter */
-	}
+	Lnode *newNode = malloc(sizeof(Lnode));
+
+	newNode->data = item;
+	newNode->link = *ph;
+
+	*ph = newNode;
+}
 
 /* Insertion en "queue de liste" */
 void insertionQueue(Lnode **ph,char item)	{
 	/* A compléter */
-	}
+}
 
 /* Suppression en "tête de liste" */
 void suppressionTete(Lnode **ph){
 	/* A compléter */
-	}
+}
 
 /* Suppression en "Queue" de liste" */
 void suppressionQueue(Lnode **ph){
 	/* A compléter */
-	}
+}
 
 /* Procédure d'affichage de la liste. Ne doit pas être modifiée!!! */
 void listeAffiche(Lnode * ptr){
@@ -40,7 +45,7 @@ void listeAffiche(Lnode * ptr){
 		ptr = ptr->link ;
 		}
 	printf("\n") ;
-	}
+}
 
 /* Programme principal. Ne doit pas être modifié!!! */
 int main(void) {
@@ -65,4 +70,4 @@ int main(void) {
 	listeAffiche(tete) ;
 
    return EXIT_SUCCESS;
-   }	
+}	
