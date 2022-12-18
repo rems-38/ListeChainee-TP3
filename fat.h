@@ -46,12 +46,15 @@ struct objet *rechercher_objet(char *nom);
 /*
 {
     objet *o <- obj
+
     Tant que o.next != NULL
         Si o.nom == nom
             Retourner o
         Fin si
+
         o <- o.next
     Fin tant que
+
     Retourner NULL
 }
 */
@@ -117,12 +120,14 @@ int supprimer_objet(char *nom);
     Si rechercher_objet(nom) != NULL
         objet *o <- obj
         objet *o2 <- obj
+
         Tant que o.next != NULL
             Si o.nom == nom
                 o2.next <- o.next
                 o.next <- NULL
                 o <- o2
             Fin si
+
             o2 <- o
             o <- o.next
         Fin tant que
@@ -152,6 +157,7 @@ void supprimer_tout();
 {
     objet *o <- obj
     objet *o2 <- obj
+
     Tant que o.next != NULL
         o2 <- o
         o <- o.next
@@ -180,9 +186,11 @@ int lire_objet(struct objet *o,char **data);
     Si rechercher_objet(nom) != NULL
         objet *o <- rechercher_objet(nom)
         data <- malloc(o.taille)
+
         Pour i allant de 0 à o.taille-1
             data[i] <- volume[FAT[i]]
         Fin pour
+        
         Retourner 0
     Sinon
         Retourner -1
