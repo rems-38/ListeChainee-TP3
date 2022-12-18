@@ -41,7 +41,11 @@ void insertionQueue(Lnode **ph,char item)	{
 
 /* Suppression en "tête de liste" */
 void suppressionTete(Lnode **ph){
-	/* A compléter */
+	Lnode *current = *ph;
+
+	*ph = current->link;
+	
+	free(current);
 }
 
 /* Suppression en "Queue" de liste" */
