@@ -41,6 +41,10 @@ void insertionQueue(Lnode **ph,char item)	{
 
 /* Suppression en "tête de liste" */
 void suppressionTete(Lnode **ph){
+	if(*ph == NULL) {
+		return;
+	}
+
 	Lnode *current = *ph;
 
 	*ph = current->link;
@@ -50,7 +54,18 @@ void suppressionTete(Lnode **ph){
 
 /* Suppression en "Queue" de liste" */
 void suppressionQueue(Lnode **ph){
-	/* A compléter */
+	if (*ph == NULL || (*ph)->link == NULL) {
+        *ph = NULL;
+        return;
+    }
+
+	Lnode *current = *ph;
+    while (current->link->link != NULL) {
+        current = current->link;
+    }
+	
+    free(current->link);
+    current->link = NULL;
 }
 
 /* Procédure d'affichage de la liste. Ne doit pas être modifiée!!! */
