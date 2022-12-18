@@ -24,7 +24,18 @@ D'initialiser la variable freeblocks à BLOCNUM.
 D'initialiser la variable obj
 */
 void initialise_fat();
+/*
+{
+    Pour i allant de 0 à BLOCNUM-1
+        FAT[i] <- 1
+    Fin pour
 
+    freeblocks <- BLOCNUM
+
+    obj.index <- 0
+    obj.next <- NULL
+}
+*/
 
 /**
 \brief Cette fonction permet de rechercher un objet par son nom dans la liste chaînée décrivant les objets
@@ -32,6 +43,18 @@ void initialise_fat();
 \return pointeur vers l'objet trouvé ou NULL sinon.
 */
 struct objet *rechercher_objet(char *nom);
+/*
+{
+    objet *o <- obj
+    Tant que o.next != NULL
+        Si o.nom == nom
+            Retourner o
+        Fin si
+        o <- o.next
+    Fin tant que
+    Retourner NULL
+}
+*/
 
 /** 
 \brief Cette fonction permet de créer un objet en vérifiant qu'aucun objet n'a le même nom dans la liste (pas triée par nom)
@@ -43,6 +66,45 @@ mettre à jour la variable freeblocks
 \param data les données à copier
 */
 struct objet *creer_objet(char *nom, unsigned short auteur,unsigned int taille, char *data);
+/*
+{
+    Si rechercher_objet(nom) == NULL
+        Si freeblocks >= taille
+            o.nom <- nom
+            o.auteur <- auteur
+            o.taille <- taille
+            o.index <- 0
+            o.next <- NULL
+
+            Si obj.index == 0
+                obj <- o
+            Sinon
+                objet *o2 <- obj
+                Tant que o2.next != NULL
+                    o2 <- o2.next
+                Fin tant que
+                o2.next <- o
+            Fin si
+
+            Pour i allant de 0 à taille-1
+                FAT[i] <- 0
+            Fin pour
+
+            freeblocks <- freeblocks - taille
+
+            Pour i allant de 0 à taille-1
+                volume[FAT[i]] <- data[i]
+            Fin pour
+
+            Retourner o
+        Sinon
+            Retourner NULL
+        Fin si
+    Sinon
+        Retourner NULL
+    Fin si
+}
+*/
 
 /**
 \brief  Cette fonction permet de supprimer un objet trouvé par son nom, de libérer les blocs dans le tableau FAT, et de mettre à jour la variable freeblocks 
@@ -50,6 +112,33 @@ struct objet *creer_objet(char *nom, unsigned short auteur,unsigned int taille, 
 \return -1 si erreur, 0 sinon.
 */
 int supprimer_objet(char *nom);
+/*
+{
+    Si rechercher_objet(nom) != NULL
+        objet *o <- obj
+        objet *o2 <- obj
+        Tant que o.next != NULL
+            Si o.nom == nom
+                o2.next <- o.next
+                o.next <- NULL
+                o <- o2
+            Fin si
+            o2 <- o
+            o <- o.next
+        Fin tant que
+
+        Pour i allant de 0 à o.taille-1
+            FAT[i] <- 1
+        Fin pour
+
+        freeblocks <- freeblocks + o.taille
+
+        Retourner 0
+    Sinon
+        Retourner -1
+    Fin si
+}
+*/
 
 
 /** 
@@ -59,6 +148,23 @@ De liberer l'ensemble des blocs dans le tableau FAT
 De modifier la variable freeblocks
 */
 void supprimer_tout();
+/*
+{
+    objet *o <- obj
+    objet *o2 <- obj
+    Tant que o.next != NULL
+        o2 <- o
+        o <- o.next
+        o2.next <- NULL
+    Fin tant que
+
+    Pour i allant de 0 à BLOCNUM-1
+        FAT[i] <- 1
+    Fin pour
+
+    freeblocks <- BLOCNUM
+}
+*/
 
 /** POUR LES PLUS RAPIDES ..................** BONUS ** BONUS ** BONUS ** 
 \brief Cette fonction permet :
@@ -69,4 +175,18 @@ Attention à la taille !!!!!!!!!!!!!!
 */
 
 int lire_objet(struct objet *o,char **data);
+/*
+{
+    Si rechercher_objet(nom) != NULL
+        objet *o <- rechercher_objet(nom)
+        data <- malloc(o.taille)
+        Pour i allant de 0 à o.taille-1
+            data[i] <- volume[FAT[i]]
+        Fin pour
+        Retourner 0
+    Sinon
+        Retourner -1
+    Fin si
+}
+*/
 
