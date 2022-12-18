@@ -21,7 +21,22 @@ void insertionTete(Lnode **ph,char item){
 
 /* Insertion en "queue de liste" */
 void insertionQueue(Lnode **ph,char item)	{
-	/* A compléter */
+	Lnode *newNode = malloc(sizeof(Lnode));
+
+	newNode->data = item;
+	newNode->link = NULL;
+
+	if(*ph == NULL) {
+		*ph = newNode;
+		return;
+	}
+	else {
+		Lnode *current = *ph;
+		while(current->link != NULL) {
+			current = current->link;
+		}
+		current->link = newNode;
+	}
 }
 
 /* Suppression en "tête de liste" */
