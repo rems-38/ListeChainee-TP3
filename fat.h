@@ -2,13 +2,12 @@
 #define BLOCNUM 1024
 #define NAMELEN 256
 
-struct objet
-{
-char nom[NAMELEN];
-unsigned int taille;
-unsigned short auteur;
-unsigned short index;
-struct objet *next;
+struct objet {
+    char nom[NAMELEN];
+    unsigned int taille;
+    unsigned short auteur;
+    unsigned short index;
+    struct objet *next;
 };
 
 extern struct objet *obj  ;
@@ -27,13 +26,12 @@ void initialise_fat();
 /*
 {
     Pour i allant de 0 à BLOCNUM-1
-        FAT[i] <- 1
+        FAT[i] <- 0xFFFF
     Fin pour
 
     freeblocks <- BLOCNUM
 
-    obj.index <- 0
-    obj.next <- NULL
+    obj <- NULL
 }
 */
 
