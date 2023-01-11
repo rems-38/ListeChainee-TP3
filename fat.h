@@ -11,7 +11,7 @@ struct objet {
 };
 
 extern struct objet *obj  ;
-extern char volume[BLOCSIZE * BLOCNUM ];
+extern char volume[BLOCSIZE * BLOCNUM];
 extern unsigned short FAT[BLOCNUM];
 extern unsigned short freeblocks;
 

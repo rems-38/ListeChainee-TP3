@@ -42,22 +42,36 @@ int rechercher_libre(unsigned short fat[BLOCNUM], int exclude) {
     return -1;
 }
 
-void print_fat() {
-    for(int i = 0; i < 50; i++) {
+fonvoid print_fat(int nb_blocs) {
+    for(int i = 0; i < nb_blocs; i++) {
         printf("i:%d | fat:%d \n", i, FAT[i]);
     }
 }
 
-void print_object(struct objet *obj) {
+void print_volume(int nb_blocs) {
+    for(int i = 0; i < nb_blocs; i++) {
+        printf("Bloc %d : \n", i);
+        for(int j = 0; j < BLOCSIZE; j++) {
+            printf("%c", volume[i*BLOCSIZE+j]);
+        }
+        printf("\n");
+    }
+}
+
+
+void print_objects() {
     if(obj != NULL) {
         struct objet *current = obj;
-        while(current->next != NULL) {
-            printf("-------------\n");
-            printf("Name : %s\n", obj->nom);
-            printf("Size : %d\n", obj->taille);
-            printf("Autor : %d\n", obj->auteur);
-            printf("Index : %d\n", obj->index);
+        int i = 0;
+        while(current != NULL) {
             printf("--------------\n");
+            printf("ID : %d\n", i);
+            printf("Name : %s\n", current->nom);
+            printf("Size : %d\n", current->taille);
+            printf("Autor : %d\n", current->auteur);
+            printf("Index : %d\n", current->index);
+            printf("--------------\n");
+            i++;
             current = current->next;
         }
     }   
@@ -66,7 +80,7 @@ void print_object(struct objet *obj) {
 struct objet *creer_objet(char *nom, unsigned short auteur, unsigned int taille, char *data) {
     if (rechercher_objet(nom) == NULL) {
         struct objet *new_objet = malloc(sizeof(struct objet));
-        if (freeblocks >= taille/512 && rechercher_libre(FAT, -1) != -1) {
+        if (freeblocks >= taille/BLOCSIZE && rechercher_libre(FAT, -1) != -1) {
             strcpy(new_objet->nom, nom);
             new_objet->auteur = auteur;
             new_objet->taille = taille;
@@ -74,14 +88,15 @@ struct objet *creer_objet(char *nom, unsigned short auteur, unsigned int taille,
             
             new_objet->index = rechercher_libre(FAT, -1); // -1 : ça n'exclu rien
             int index;
-            for (int i = 0; i < (taille/512)+1; i++) {
+            for (int i = 0; i < (taille/BLOCSIZE)+1; i++) {
                 index = rechercher_libre(FAT, -1);
                 FAT[index] = rechercher_libre(FAT, index);
 
-                for (int j = i*512; j < (i+1)*512; j++) {
+                for (int j = i*BLOCSIZE; j < (i+1)*BLOCSIZE; j++) {
                     if (j < taille) {
-                        volume[FAT[index]] = data[j];
+                        volume[(FAT[index]-1)*BLOCSIZE+j] = data[j];
                     }
+                    
                 }
             }
             FAT[rechercher_libre(FAT, index)] = 65534;
@@ -98,7 +113,7 @@ struct objet *creer_objet(char *nom, unsigned short auteur, unsigned int taille,
                 current->next = new_objet;
             }
 
-            freeblocks -= taille/512;
+            freeblocks -= taille/BLOCSIZE;
 
             return new_objet;
         }
@@ -121,24 +136,39 @@ int supprimer_objet(char *nom) {
         index = temp_i;
     }
     FAT[index] = 65535;
-    freeblocks += to_delete->taille;
+
+    if(obj == to_delete) {
+        obj = obj->next;
+    }
+    else {
+        while(obj->next != to_delete) {
+            obj = obj->next;
+        }
+        obj->next = obj->next->next;
+    }
+
+    freeblocks += to_delete->taille/BLOCSIZE;
+    free(to_delete);
     return 0;
+}
+
+void supprimer_tout() {
+    while(obj != NULL) {
+        supprimer_objet(obj->nom);
+        obj = obj->next;
+    }
 }
 
 int main() {
     initialise_fat();
     
-    printf("Add 1er et 2ème objet\n");
-    creer_objet("1er objet", 5, 513, "abcdefgh");
-    creer_objet("2ème objet", 4, 1265, "fghdsjkc,vn buqcfbzqjq");
-    print_fat();
-    printf("\nDelete 1er objet\n");
-    supprimer_objet("1er objet");
-    print_fat();
-    printf("\nAdd 3ème objet\n");
-    creer_objet("3ème objet", 13, 1753, "ireznq");
-    print_fat();
-
+    creer_objet("1er objet", 5, 680, "abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgh");
+    // print_volume(3);
+    creer_objet("2ème objet", 4, 9, "fgadsjkcq");
+    // print_volume(3);
+    creer_objet("3ème objet", 13, 6, "ireznq");
+    print_volume(7);
+    // print_fat(10);
 
     
     return 0;
