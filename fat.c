@@ -42,9 +42,9 @@ int rechercher_libre(unsigned short fat[BLOCNUM], int exclude) {
     return -1;
 }
 
-fonvoid print_fat(int nb_blocs) {
+void print_fat(int nb_blocs) {
     for(int i = 0; i < nb_blocs; i++) {
-        printf("i:%d | fat:%d \n", i, FAT[i]);
+        i < 10 ? printf("i:%d  | fat:%d \n", i, FAT[i]) : printf("i:%d | fat: %d \n", i, FAT[i]);
     }
 }
 
@@ -88,15 +88,13 @@ struct objet *creer_objet(char *nom, unsigned short auteur, unsigned int taille,
             
             new_objet->index = rechercher_libre(FAT, -1); // -1 : ça n'exclu rien
             int index;
+            int act_size = 0;
             for (int i = 0; i < (taille/BLOCSIZE)+1; i++) {
                 index = rechercher_libre(FAT, -1);
                 FAT[index] = rechercher_libre(FAT, index);
 
-                for (int j = i*BLOCSIZE; j < (i+1)*BLOCSIZE; j++) {
-                    if (j < taille) {
-                        volume[(FAT[index]-1)*BLOCSIZE+j] = data[j];
-                    }
-                    
+                for (int j = (FAT[index]-1)*BLOCSIZE; act_size < taille && j < (FAT[index])*BLOCSIZE; j++, act_size++) {
+                    volume[j] = data[act_size];
                 }
             }
             FAT[rechercher_libre(FAT, index)] = 65534;
@@ -168,7 +166,7 @@ int main() {
     // print_volume(3);
     creer_objet("3ème objet", 13, 6, "ireznq");
     print_volume(7);
-    // print_fat(10);
+    print_fat(10);
 
     
     return 0;
