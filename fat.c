@@ -165,7 +165,11 @@ int main() {
     creer_objet("2ème objet", 4, 9, "fgadsjkcq");
     // print_volume(3);
     creer_objet("3ème objet", 13, 6, "ireznq");
-    print_volume(7);
+    supprimer_objet("1er objet");
+    creer_objet("4ème objet", 2, 6, "ireznq");
+    creer_objet("5ème objet", 2, 6, "ireznq");
+    creer_objet("6ème objet", 2, 6, "ireznq");
+    print_volume(20);
     print_fat(10);
 
     
